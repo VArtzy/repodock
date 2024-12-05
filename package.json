@@ -1,0 +1,37 @@
+{
+  "name": "repodock",
+  "version": "1.0.0",
+  "description": "Effortless GitHub Repository Management",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+      "red": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VArtzy/repodock.git"
+  },
+  "keywords": [
+    "repository",
+    "git",
+    "cli",
+    "symlink",
+    "productivity",
+    "tools",
+    "coding"
+  ],
+  "author": "Farrel Nikoson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VArtzy/repodock/issues"
+  },
+  "homepage": "https://github.com/VArtzy/repodock#readme",
+  "devDependencies": {
+    "@types/node": "^22.10.1"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  }
+}
