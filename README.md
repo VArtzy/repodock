@@ -10,16 +10,15 @@ Create the directory as your main repodock directory to store github repo symlin
 
 ```bash
 npm install -g repodock
-```
 
 red --help
-
 red set <your-repodock-path>
 red add . -> alias is automatically set to the directory name
 red add . my-project-alias
 red add <your-absolute-path> -> alias is automatically set to the directory name
 red rm <alias>
 red list
+```
 
 You can also custom your command, instead of "red" set to "rd" in package.json "bin"
 
