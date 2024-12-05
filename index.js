@@ -41,6 +41,7 @@ var path = require("path");
 var os = require("os");
 var fs = require("fs");
 var commander_1 = require("commander");
+var child_process_1 = require("child_process");
 var RepoLinker = /** @class */ (function () {
     function RepoLinker() {
         this.configPath = path.join(os.homedir(), '.repodock.json');
@@ -71,11 +72,21 @@ var RepoLinker = /** @class */ (function () {
         }
         var repoName = alias || path.basename(fullRepoPath);
         var symlinkPath = path.join(this.config.ghDir, repoName);
-        fs.opendir(this.config.ghDir, function (err) { return err ? RepoLinker.logError(err.message) : null; });
-        fs.symlink(fullRepoPath, symlinkPath, function (err) { return err ? RepoLinker.logError(err.message) : null; });
+        fs.opendir(this.config.ghDir, function () { });
+        fs.symlink(fullRepoPath, symlinkPath, function () { });
         this.config.repo[repoName] = fullRepoPath;
         this.saveConfig();
         console.log("\u001B[32m Repository linked: ".concat(repoName, " -> ").concat(fullRepoPath, " \u001B[0m"));
+    };
+    RepoLinker.prototype.init = function () {
+        try {
+            (0, child_process_1.execSync)('git init');
+            this.add('.');
+            console.log('\x1b[32m Repository initialized and tracked \x1b[0m');
+        }
+        catch (err) {
+            RepoLinker.logError("Initialization failed: ".concat(err));
+        }
     };
     RepoLinker.prototype.list = function () {
         if (Object.keys(this.config.repo).length === 0) {
@@ -93,12 +104,12 @@ var RepoLinker = /** @class */ (function () {
             RepoLinker.logError("Repository ".concat(alias, " not found"));
         }
         var symlinkPath = path.join(this.config.ghDir, alias);
-        fs.rm(symlinkPath, function (err) { return err ? RepoLinker.logError(err.message) : null; });
+        fs.rm(symlinkPath, function () { });
         delete this.config.repo[alias];
         this.saveConfig();
     };
     RepoLinker.prototype.set = function (newPath) {
-        fs.opendir(this.config.ghDir, function (err) { return err ? RepoLinker.logError(err.message) : null; });
+        fs.opendir(this.config.ghDir, function () { });
         this.config.ghDir = newPath;
         this.saveConfig();
         console.log("\u001B[32m GitHub directory updated to: ".concat(newPath, " \u001B[0m"));
@@ -113,15 +124,17 @@ function main() {
                 case 0:
                     linker = new RepoLinker();
                     commander_1.program
-                        .version('1.0.0')
+                        .version('1.0.1')
                         .description('Instantly create a centralized, symlinked directory that maps all your projects, making repository discovery as simple as a single command.');
                     commander_1.program
-                        .command('add <repoPath>')
-                        .description('Add a repository symlink')
-                        .option('-a, --alias <alias>', 'Optional alias for the repository')
-                        .action(function (repoPath, options) { return linker.add(repoPath, options.alias); });
+                        .argument('[path]', 'Add a repository symlink', '.')
+                        .action(function (repoPath) { return linker.add(repoPath); });
                     commander_1.program
-                        .command('list')
+                        .command('init')
+                        .description('Intialize git repository and track it')
+                        .action(function () { return linker.init(); });
+                    commander_1.program
+                        .command('ls')
                         .description('List all linked repositories')
                         .action(function () { return linker.list(); });
                     commander_1.program

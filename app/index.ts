@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import { program } from 'commander';
+import { execSync } from 'child_process';
 
 interface Config {
     ghDir: string;
@@ -49,14 +50,25 @@ class RepoLinker {
         const repoName = alias || path.basename(fullRepoPath)
         const symlinkPath = path.join(this.config.ghDir, repoName)
 
-        fs.opendir(this.config.ghDir, err => err ? RepoLinker.logError(err.message): null)
+        fs.opendir(this.config.ghDir, () => {})
 
-        fs.symlink(fullRepoPath, symlinkPath, err => err ? RepoLinker.logError(err.message) : null)
+        fs.symlink(fullRepoPath, symlinkPath, () => {})
 
         this.config.repo[repoName] = fullRepoPath
         this.saveConfig()
 
         console.log(`\x1b[32m Repository linked: ${repoName} -> ${fullRepoPath} \x1b[0m`)
+    }
+
+    init() {
+        try {
+            execSync('git init')
+            this.add('.')
+
+            console.log('\x1b[32m Repository initialized and tracked \x1b[0m')
+        } catch (err) {
+            RepoLinker.logError(`Initialization failed: ${err}`)
+        }
     }
 
     list() {
@@ -78,14 +90,14 @@ class RepoLinker {
 
         const symlinkPath = path.join(this.config.ghDir, alias)
 
-        fs.rm(symlinkPath, err => err ? RepoLinker.logError(err.message) : null)
+        fs.rm(symlinkPath, () => {})
 
         delete this.config.repo[alias]
         this.saveConfig()
     }
 
     set(newPath: string) {
-        fs.opendir(this.config.ghDir, err => err ? RepoLinker.logError(err.message): null)
+        fs.opendir(this.config.ghDir, () => {})
 
         this.config.ghDir = newPath
         this.saveConfig()
@@ -98,17 +110,20 @@ async function main() {
     const linker = new RepoLinker()
 
     program
-    .version('1.0.0')
+    .version('1.0.1')
     .description('Instantly create a centralized, symlinked directory that maps all your projects, making repository discovery as simple as a single command.')
 
     program
-    .command('add <repoPath>')
-    .description('Add a repository symlink')
-    .option('-a, --alias <alias>', 'Optional alias for the repository')
-    .action((repoPath, options) => linker.add(repoPath, options.alias))
+    .argument('[path]', 'Add a repository symlink', '.')
+    .action(repoPath => linker.add(repoPath))
 
     program
-    .command('list')
+    .command('init')
+    .description('Intialize git repository and track it')
+    .action(() => linker.init())
+
+    program
+    .command('ls')
     .description('List all linked repositories')
     .action(() => linker.list())
 

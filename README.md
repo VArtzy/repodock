@@ -8,14 +8,17 @@ Tired of losing track of your local GitHub repositories? Repodock is your person
 
 Create the directory as your main repodock directory to store github repo symlinks
 
+Forgot using git init, use red init!
+
 ```bash
 npm install -g repodock
 
 red --help
+red init -> git init and track to repodock
 red set <your-repodock-path>
-red add . -> alias is automatically set to the directory name
-red add . my-project-alias
-red add <your-absolute-path> -> alias is automatically set to the directory name
+red . -> alias is automatically set to the directory name
+red . my-project-alias
+red <your-absolute-path> -> alias is automatically set to the directory name
 red rm <alias>
 red list
 ```
