@@ -2,7 +2,7 @@
 
 ## Repodock: Effortless GitHub Repository Management
 
-Tired of losing track of your local GitHub repositories? GitHarbor is your personal code navigation assistant. Instantly create a centralized, symlinked directory that maps all your projects, making repository discovery as simple as a single command.
+Tired of losing track of your local GitHub repositories? Repodock is your personal code navigation assistant. Instantly create a centralized, symlinked directory that maps all your projects, making repository discovery as simple as a single command.
 
 ## Installation
 
