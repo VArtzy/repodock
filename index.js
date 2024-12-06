@@ -72,8 +72,8 @@ var RepoLinker = /** @class */ (function () {
         }
         var repoName = alias || path.basename(fullRepoPath);
         var symlinkPath = path.join(this.config.ghDir, repoName);
-        fs.opendir(this.config.ghDir, function () { });
-        fs.symlink(fullRepoPath, symlinkPath, function () { });
+        fs.opendir(this.config.ghDir, function (err) { return err ? RepoLinker.logError("Invalid GitHub directory: ".concat(err)) : null; });
+        fs.symlink(fullRepoPath, symlinkPath, function (err) { return err ? RepoLinker.logError("Symlink failed: ".concat(err, ". If you are in windows, please activated the developer mode")) : null; });
         this.config.repo[repoName] = fullRepoPath;
         this.saveConfig();
         console.log("\u001B[32m Repository linked: ".concat(repoName, " -> ").concat(fullRepoPath, " \u001B[0m"));
@@ -104,12 +104,12 @@ var RepoLinker = /** @class */ (function () {
             RepoLinker.logError("Repository ".concat(alias, " not found"));
         }
         var symlinkPath = path.join(this.config.ghDir, alias);
-        fs.rm(symlinkPath, function () { });
+        fs.rm(symlinkPath, function (err) { return err ? RepoLinker.logError("Failed to remove symlink: ".concat(err)) : null; });
         delete this.config.repo[alias];
         this.saveConfig();
     };
     RepoLinker.prototype.set = function (newPath) {
-        fs.opendir(this.config.ghDir, function () { });
+        fs.opendir(this.config.ghDir, function (err) { return err ? RepoLinker.logError("Invalid GitHub directory: ".concat(err)) : null; });
         this.config.ghDir = newPath;
         this.saveConfig();
         console.log("\u001B[32m GitHub directory updated to: ".concat(newPath, " \u001B[0m"));

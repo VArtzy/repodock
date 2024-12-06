@@ -50,9 +50,9 @@ class RepoLinker {
         const repoName = alias || path.basename(fullRepoPath)
         const symlinkPath = path.join(this.config.ghDir, repoName)
 
-        fs.opendir(this.config.ghDir, () => {})
+        fs.opendir(this.config.ghDir, err => err ? RepoLinker.logError(`Invalid GitHub directory: ${err}`) : null)
 
-        fs.symlink(fullRepoPath, symlinkPath, () => {})
+        fs.symlink(fullRepoPath, symlinkPath, err => err ? RepoLinker.logError(`Symlink failed: ${err}. If you are in windows, please activated the developer mode`) : null)
 
         this.config.repo[repoName] = fullRepoPath
         this.saveConfig()
@@ -90,14 +90,14 @@ class RepoLinker {
 
         const symlinkPath = path.join(this.config.ghDir, alias)
 
-        fs.rm(symlinkPath, () => {})
+        fs.rm(symlinkPath, err => err ? RepoLinker.logError(`Failed to remove symlink: ${err}`) : null)
 
         delete this.config.repo[alias]
         this.saveConfig()
     }
 
     set(newPath: string) {
-        fs.opendir(this.config.ghDir, () => {})
+        fs.opendir(this.config.ghDir, err => err ? RepoLinker.logError(`Invalid GitHub directory: ${err}`) : null)
 
         this.config.ghDir = newPath
         this.saveConfig()

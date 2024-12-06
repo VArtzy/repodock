@@ -1,6 +1,6 @@
 {
   "name": "repodock",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Effortless GitHub Repository Management",
   "main": "index.js",
   "scripts": {

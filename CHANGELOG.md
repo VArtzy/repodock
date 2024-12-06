@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
  
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.0.4] - 2024-12-06
+ 
+Bug fixes on windows symlink, you should activated the developer mode
  
 ## [1.0.3] - 2024-12-05
  

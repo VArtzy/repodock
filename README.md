@@ -8,6 +8,8 @@ Tired of losing track of your local GitHub repositories? Repodock is your person
 
 Create the directory as your main repodock directory to store github repo symlinks
 
+!!! WINDOWS USER: [you may have to active windows developer mode in order to work](https://www.howtogeek.com/292914/what-is-developer-mode-in-windows-10) !!!
+
 Forgot using git init, use red init!
 
 ```bash
